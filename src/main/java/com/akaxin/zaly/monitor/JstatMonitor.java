@@ -12,11 +12,9 @@ import org.apache.log4j.Logger;
 import com.akaxin.zaly.logs.LogCreater;
 import com.akaxin.zaly.logs.LogUtils;
 
-/**
- * JSTAT 监控器
- */
 public class JstatMonitor extends ZalyMonitor {
 	private static final Logger logger = Logger.getLogger(JstatMonitor.class);
+
 	private List<String> statTitles = Arrays.asList("S0", "S1", "E", "O", "M", "CCS", "YGC", "YGCT", "FGC", "FGCT",
 			"GCT");
 	private Process process = null;
@@ -24,17 +22,15 @@ public class JstatMonitor extends ZalyMonitor {
 
 	public JstatMonitor() {
 		try {
-			// 启动 JSTAT 进程
 			String name = ManagementFactory.getRuntimeMXBean().getName();
 			String pid = name.substring(0, name.indexOf("@"));
 			process = Runtime.getRuntime().exec("jstat -gcutil " + pid + " " + getIntervalTime());
-			LogUtils.info(logger, "Start jstat process for java application {}", pid);
 
-			// 初始化结果输入流
+			LogUtils.info(logger, "Start jstat for java application pid={}", pid);
+
 			InputStreamReader isr = new InputStreamReader(process.getInputStream());
 			bufferedReader = new BufferedReader(isr);
 
-			// 添加推出钩子
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
