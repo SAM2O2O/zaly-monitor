@@ -13,6 +13,7 @@ public abstract class ZalyMonitor {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public static final long INTERVAL_TIME = 1 * 1000;
 
+	private Logger monitorLogger;
 	private long intervalCount = 0;// 间隔输出次数
 
 	private List<String> headers;
@@ -42,8 +43,15 @@ public abstract class ZalyMonitor {
 		return monitorData;
 	}
 
+	private Logger getLogger() {
+		if (monitorLogger == null) {
+			monitorLogger = getMonitorLogger();
+		}
+		return monitorLogger;
+	}
+
 	public void output(List<ZalyMonitor> monitors, Map<String, String> monitorData) {
-		Logger logger = getMonitorLogger();
+		Logger logger = getLogger();
 		// header
 		StringBuffer sb = new StringBuffer();
 		List<String> monitorHeaders = this.getHeader();
